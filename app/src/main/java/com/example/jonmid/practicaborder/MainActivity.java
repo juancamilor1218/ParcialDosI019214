@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.jonmid.practicaborder.Adapters.FoodAdapter;
 import com.example.jonmid.practicaborder.Http.UrlManager;
 import com.example.jonmid.practicaborder.Models.Food;
 import com.example.jonmid.practicaborder.Parser.JsonFood;
@@ -24,20 +25,27 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     List<Food> foodList=new ArrayList<>();
+    FoodAdapter foodAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         recyclerView=(RecyclerView)findViewById(R.id.id_rcv_food);
+        loadData();
+
     }
 
     public void loadData() {
+
+
         if (isOnLine()) {
+            Toast.makeText(this, "Sin conexion", Toast.LENGTH_SHORT).show();
             TaskFood taskFood= new TaskFood();
             taskFood.execute("http://www.recipepuppy.com/api/?i=onions,garlic&q=omelet&p=3");
         } else {
-            Toast.makeText(this, "Sin conexion", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Sin lll conexion", Toast.LENGTH_SHORT).show();
         }
+
     }
     public Boolean isOnLine(){
         // Hacer llamado al servicio de conectividad utilizando el ConnectivityManager
@@ -54,14 +62,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     public void processData(){
-
+        foodAdapter=new FoodAdapter(foodList,getApplicationContext());
+        recyclerView.setAdapter(foodAdapter);
     }
     //********************************************************+
     public class TaskFood extends AsyncTask<String, String, String> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
         }
 
         @Override
